@@ -1,3 +1,9 @@
+# deps
+
+* node.js
+* PHP 5.3
+* zeromq
+
 # node deps
 
     npm install socket.io
