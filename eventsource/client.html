@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>EventSource client</title>
+</head>
+<body>
+
+<script>
+    var stream = new EventSource('stream.php');
+
+    stream.addEventListener('debug', function (event) {
+        console.log(event.data);
+    });
+
+    stream.addEventListener('message', function (event) {
+        console.log(event.data);
+    });
+</script>
+
+</body>
+</html>
