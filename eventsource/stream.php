@@ -11,6 +11,7 @@ ini_set('memory_limit', '512M');
 
 header("Content-Type: text/event-stream");
 header("Cache-Control: no-cache");
+// header("Access-Control-Allow-Origin: *");
 
 while (true) {
     $msg = $sock->recv();
