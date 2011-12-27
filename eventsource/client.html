@@ -10,11 +10,13 @@
     var stream = new EventSource('stream.php');
 
     stream.addEventListener('debug', function (event) {
-        console.log(event.data);
+        var data = JSON.parse(event.data);
+        console.log([event.type, data]);
     });
 
     stream.addEventListener('message', function (event) {
-        console.log(event.data);
+        var data = JSON.parse(event.data);
+        console.log([event.type, data]);
     });
 </script>
 
