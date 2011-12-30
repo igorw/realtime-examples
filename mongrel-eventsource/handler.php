@@ -6,7 +6,7 @@ use Mongrel2\Connection;
 use Mongrel2\Request;
 use Mongrel2\Tool;
 
-$sender_id = "82209006-86FF-4982-B5EA-D1E29E55D481";
+$sender_id = "ab206881-6f49-4276-9db1-1676bfae18b0";
 $conn = new Connection($sender_id, "tcp://127.0.0.1:9997", "tcp://127.0.0.1:9996");
 
 $context = $conn->getContext();
@@ -21,7 +21,7 @@ $poll->add($pull, ZMQ::POLL_IN);
 $poll->add($sub, ZMQ::POLL_IN);
 $readable = $writeable = array();
 
-$users = new SplObjectStorage();
+$users = array();
 
 while (true) {
     $events = $poll->poll($readable, $writeable);
@@ -29,12 +29,12 @@ while (true) {
         if ($pull === $socket) {
             $req = $conn->recv();
 
-            $users->attach($req);
+            $users[$req->conn_id] = $req;
 
             if ($req->is_disconnect()) {
-                $users->detach($req);
+                unset($users[$req->conn_id]);
 
-                echo "User disconnected\n";
+                echo sprintf("User %s disconnected\n", $req->conn_id);
                 echo sprintf("Current users: %s\n", count($users));
 
                 continue;
