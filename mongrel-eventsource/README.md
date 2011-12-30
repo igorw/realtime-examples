@@ -1,4 +1,4 @@
-# Hello mongrel2 example (using m2php)
+# EventSource mongrel2 example
 
     $ wget http://getcomposer.org/composer.phar
     $ php composer.phar install

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>EventSource client</title>
+</head>
+<body>
+
+<script>
+    var stream = new EventSource('/stream');
+
+    stream.addEventListener('debug', function (event) {
+        var data = JSON.parse(event.data);
+        console.log([event.type, data]);
+    });
+
+    stream.addEventListener('message', function (event) {
+        var data = JSON.parse(event.data);
+        console.log([event.type, data]);
+    });
+</script>
+
+</body>
+</html>
