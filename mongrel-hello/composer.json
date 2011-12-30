@@ -1,0 +1,12 @@
+{
+    "repositories": {
+        "github-m2php": {
+            "vcs": {
+                "url": "https://github.com/winks/m2php.git"
+            }
+        }
+    },
+    "require": {
+        "mongrel2/mongrel2": ">=0.1.9-dev"
+    }
+}

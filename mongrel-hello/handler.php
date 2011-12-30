@@ -1,19 +1,18 @@
 <?php
 
-$ctx = new ZMQContext();
-$in = $ctx->getSocket(ZMQ::SOCKET_PULL);
-$in->connect('tcp://localhost:9997');
+require __DIR__.'/vendor/.composer/autoload.php';
 
-$out = $ctx->getSocket(ZMQ::SOCKET_PUB);
-$out->connect('tcp://localhost:9996');
+use Mongrel2\Connection;
 
-$http = "HTTP/1.1 200 OK\r\nContent-Length: %s\r\n\r\n%s";
+$sender_id = "82209006-86FF-4982-B5EA-D1E29E55D481";
+$conn = new Connection($sender_id, "tcp://127.0.0.1:9997", "tcp://127.0.0.1:9996");
 
 while (true) {
-    $msg = $in->recv();
-    list($uuid, $id, $path, $rest) = explode(" ", $msg, 4);
-    echo "got message $rest";
-    $res = $uuid . " " . strlen($id) . ':' . $id . ", ";
-    $res .= sprintf($http, 6, "Hello!");
-    $out->send($res);
+    $req = $conn->recv();
+
+    if ($req->is_disconnect()) {
+        continue;
+    }
+
+    $conn->reply_http($req, 'Hello World');
 }
