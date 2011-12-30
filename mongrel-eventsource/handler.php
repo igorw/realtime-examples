@@ -5,6 +5,7 @@ require __DIR__.'/vendor/.composer/autoload.php';
 use Mongrel2\Connection;
 use Mongrel2\Request;
 use Mongrel2\Tool;
+use EventSource\Formatter;
 
 $sender_id = "ab206881-6f49-4276-9db1-1676bfae18b0";
 $conn = new Connection($sender_id, "tcp://127.0.0.1:9997", "tcp://127.0.0.1:9996");
@@ -52,11 +53,13 @@ while (true) {
             $msg = $sub->recv();
             $event = json_decode($msg, true);
 
-            $reply = '';
+            $source = new Formatter();
             if (isset($event['type'])) {
-                $reply .= "event: {$event['type']}\n";
+                $source->setEvent($event['type']);
             }
-            $reply .= sprintf("data: %s\n\n", json_encode($event['data']));
+            $source->setData(json_encode($event['data']));
+
+            $reply = $source->dump();
 
             echo sprintf("Streaming event: %s\n", json_encode($event['data']));
 
