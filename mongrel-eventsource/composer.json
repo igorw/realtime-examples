@@ -7,9 +7,7 @@
         }
     },
     "require": {
-        "mongrel2/mongrel2": ">=0.1.9-dev"
-    },
-    "autoload": {
-        "psr-0": { "Igorw\\EventSource": "src" }
+        "mongrel2/mongrel2": ">=0.1.9-dev",
+        "igorw/event-source": "master-dev"
     }
 }
