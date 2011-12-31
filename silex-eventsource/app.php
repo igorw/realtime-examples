@@ -3,7 +3,6 @@
 require __DIR__.'/vendor/.composer/autoload.php';
 
 use Igorw\EventSource\Stream;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 $app = new Silex\Application();
 
@@ -36,7 +35,7 @@ $app->get('/stream', function () use ($app) {
         }
     };
 
-    return new StreamedResponse($stream, 200, $headers);
+    return $app->stream($stream, 200, $headers);
 });
 
 $app->run();
