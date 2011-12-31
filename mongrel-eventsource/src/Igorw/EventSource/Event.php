@@ -1,12 +1,12 @@
 <?php
 
-namespace EventSource;
+namespace Igorw\EventSource;
 
 /**
  * Generates a stream in the W3C EventSource format
  * http://dev.w3.org/html5/eventsource/
  */
-class Formatter
+class Event
 {
     private $comments = array();
     private $id;
@@ -56,11 +56,12 @@ class Formatter
 
     public function dump()
     {
-        return $this->getFormattedComments().
-               $this->getFormattedId().
-               $this->getFormattedEvent().
-               $this->getFormattedData().
-               "\n";
+        $response = $this->getFormattedComments().
+                    $this->getFormattedId().
+                    $this->getFormattedEvent().
+                    $this->getFormattedData();
+        
+        return '' !== $response ? $response."\n" : '';
     }
 
     public function getFormattedComments()

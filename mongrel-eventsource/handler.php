@@ -5,7 +5,8 @@ require __DIR__.'/vendor/.composer/autoload.php';
 use Mongrel2\Connection;
 use Mongrel2\Request;
 use Mongrel2\Tool;
-use EventSource\Formatter;
+use Igorw\EventSource\Event;
+use Igorw\EventSource\Stream;
 
 $sender_id = "ab206881-6f49-4276-9db1-1676bfae18b0";
 $conn = new Connection($sender_id, "tcp://127.0.0.1:9997", "tcp://127.0.0.1:9996");
@@ -23,6 +24,12 @@ $poll->add($sub, ZMQ::POLL_IN);
 $readable = $writeable = array();
 
 $users = array();
+
+$stream = new Stream(function ($chunk) use ($conn, &$users) {
+    foreach ($users as $req) {
+        $conn->reply($req, $chunk);
+    }
+});
 
 while (true) {
     $events = $poll->poll($readable, $writeable);
@@ -44,28 +51,20 @@ while (true) {
             echo "New user connected\n";
             echo sprintf("Current users: %s\n", count($users));
 
-            $headers = array(
-                'Content-Type'  => 'text/event-stream',
-                'Cache-Control' => 'no-cache',
-            );
+            $headers = Stream::getHeaders();
             $conn->reply($req, Tool::http_response_headers(200, "OK", $headers));
         } else {
             $msg = $sub->recv();
             $event = json_decode($msg, true);
 
-            $source = new Formatter();
-            if (isset($event['type'])) {
-                $source->setEvent($event['type']);
-            }
-            $source->setData(json_encode($event['data']));
-
-            $reply = $source->dump();
-
             echo sprintf("Streaming event: %s\n", json_encode($event['data']));
 
-            foreach ($users as $req) {
-                $conn->reply($req, $reply);
-            }
+            $stream
+                ->event()
+                    ->setEvent(isset($event['type']) ? $event['type'] : null)
+                    ->setData(json_encode($event['data']))
+                ->end()
+                ->flush();
         }
     }
 }
