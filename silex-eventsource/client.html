@@ -7,7 +7,7 @@
 <body>
 
 <script>
-    var stream = new EventSource('stream');
+    var stream = new EventSource('app.php/stream');
 
     stream.addEventListener('message', function (event) {
         console.log(event.data);

@@ -24,6 +24,9 @@ $app->get('/stream', function () use ($app) {
     $headers = Stream::getHeaders();
 
     $stream = function () use ($app, &$response) {
+        set_time_limit(0);
+        ini_set('memory_limit', '512M');
+
         while (true) {
             $app['stream']
                 ->event()
