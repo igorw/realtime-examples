@@ -7,13 +7,7 @@ use Igorw\EventSource\Stream;
 $app = new Silex\Application();
 
 $app['stream'] = $app->share(function ($app) {
-    return new Stream($app['stream.handler']);
-});
-
-$app['stream.handler'] = $app->protect(function ($chunk) {
-    echo $chunk;
-    ob_flush();
-    flush();
+    return new Stream();
 });
 
 $app->get('/', function () {
@@ -34,7 +28,7 @@ $app->get('/stream', function () use ($app) {
                 ->end()
                 ->flush();
 
-            sleep(2);
+            sleep(5);
         }
     };
 
